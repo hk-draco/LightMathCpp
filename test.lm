@@ -1,0 +1,86 @@
+
+# ‰‰ŽZŽq
+operator ^ (2, 10) => pow
+operator * (2, 9) => mul
+operator / (2, 9) => div
+operator % (2, 9) => mod
+operator + (2, 8) => add
+operator - (2, 8) => sub
+operator = (2, 7) => equals
+operator < (2, 7) => less
+operator > (2, 7) => larger
+operator <=(2, 7) => lesse
+operator >=(2, 7) => largere
+operator ~ (1, 6, right) => not
+operator & (2, 5) => and
+operator | (2, 5) => or
+operator = (2, 4) => equals
+operator ->(2, 3) => implies
+operator <->(2, 3) => iff
+operator =>(2, 2) => simpl
+
+# –½‘è
+type Prop
+undef True: Prop
+undef False: Prop
+undef and(A, B: Prop): Prop
+undef or(A, B: Prop): Prop
+undef not(A: Prop): Prop
+
+undef equals(A, B: Prop): Prop # TODO
+
+axiom {
+	~False => True
+}
+
+axiom {
+	~True => False
+}
+
+axiom (A: Prop) {
+	~(~A) => A
+}
+
+axiom (A, B: Prop) {
+	A & B = B & A
+}
+
+axiom (A, B, C: Prop) {
+	A & (B & C) = (A & B) & C
+}
+
+axiom (A, B: Prop) {
+	A | B = B | A
+}
+
+axiom (A, B, C: Prop) {
+	A | (B | C) = (A | B) | C
+}
+
+axiom (A: Prop) {
+	A & True => A
+}
+
+axiom (A: Prop) {
+	A | True => True
+}
+
+def implies(A, B: Prop): Prop {
+	~A | B
+}
+
+theorim (A, B, C: Prop) {
+	A & (B | C) => A & B | A & C
+}
+
+axiom (A, B: Prop) {
+	A -> B => ~A | B
+}
+
+theorim (A, B: Prop) {
+	~A -> ~B => B -> A
+proof(->):
+	step ~A -> ~B
+	#step A | ~B
+	#step B -> A
+}

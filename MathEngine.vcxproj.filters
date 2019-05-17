@@ -1,0 +1,203 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="test">
+      <UniqueIdentifier>{3b305149-509f-461e-a78a-7f54f8726894}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="objs">
+      <UniqueIdentifier>{82a2bdc5-0654-4704-906f-0444a3205f5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Kernel">
+      <UniqueIdentifier>{108c7d4b-c321-4db0-a052-54a0aa65a67f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lib">
+      <UniqueIdentifier>{2e80bd99-2d47-4e82-9788-c450b645702a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Parse">
+      <UniqueIdentifier>{6b891069-6344-4294-bdb0-2e662cc2a79f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="program.h">
+      <Filter>objs</Filter>
+    </ClInclude>
+    <ClInclude Include="funcs.h">
+      <Filter>objs</Filter>
+    </ClInclude>
+    <ClInclude Include="backup.lm">
+      <Filter>test</Filter>
+    </ClInclude>
+    <ClInclude Include="real.lm">
+      <Filter>test</Filter>
+    </ClInclude>
+    <ClInclude Include="RewritingInfo.h">
+      <Filter>Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="RewritingRule.h">
+      <Filter>Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="Scope.h">
+      <Filter>Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="Simplicity.h">
+      <Filter>Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="Statement.h">
+      <Filter>Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="Allocator.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="Block.h">
+      <Filter>Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="MathEntity.h">
+      <Filter>Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="Iterator.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="Parser.h">
+      <Filter>Parse</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="Location.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="Type.h">
+      <Filter>Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="String.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="Array.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="List.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="Token.h">
+      <Filter>Parse</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="Message.h">
+      <Filter>Parse</Filter>
+    </ClInclude>
+    <ClInclude Include="ExpressionParser.h">
+      <Filter>Parse</Filter>
+    </ClInclude>
+    <ClInclude Include="ParsingState.h">
+      <Filter>Parse</Filter>
+    </ClInclude>
+    <ClInclude Include="Expression2.h">
+      <Filter>Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="Expression.h">
+      <Filter>Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="ExpressionFunction.h">
+      <Filter>Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="ExpressionAtom.h">
+      <Filter>Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="ExpressionLambda.h">
+      <Filter>Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="ExpressionStep.h">
+      <Filter>Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="Pointer.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="Base.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="ExpressionType.h">
+      <Filter>Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="Declaration.h">
+      <Filter>Kernel</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="test.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="RewritingInfo.cpp">
+      <Filter>Kernel</Filter>
+    </ClCompile>
+    <ClCompile Include="RewritingRule.cpp">
+      <Filter>Kernel</Filter>
+    </ClCompile>
+    <ClCompile Include="Scope.cpp">
+      <Filter>Kernel</Filter>
+    </ClCompile>
+    <ClCompile Include="Simplicity.cpp">
+      <Filter>Kernel</Filter>
+    </ClCompile>
+    <ClCompile Include="Statement.cpp">
+      <Filter>Kernel</Filter>
+    </ClCompile>
+    <ClCompile Include="Allocator.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="Block.cpp">
+      <Filter>Kernel</Filter>
+    </ClCompile>
+    <ClCompile Include="Declaration.cpp">
+      <Filter>Kernel</Filter>
+    </ClCompile>
+    <ClCompile Include="MathEntity.cpp">
+      <Filter>Kernel</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>Kernel</Filter>
+    </ClCompile>
+    <ClCompile Include="Type.cpp">
+      <Filter>Kernel</Filter>
+    </ClCompile>
+    <ClCompile Include="Parser.cpp">
+      <Filter>Parse</Filter>
+    </ClCompile>
+    <ClCompile Include="Lexer.cpp">
+      <Filter>Parse</Filter>
+    </ClCompile>
+    <ClCompile Include="paroc.cpp" />
+    <ClCompile Include="ExpressionParser.cpp">
+      <Filter>Parse</Filter>
+    </ClCompile>
+    <ClCompile Include="Expression2.cpp">
+      <Filter>Kernel</Filter>
+    </ClCompile>
+    <ClCompile Include="Expression.cpp">
+      <Filter>Kernel</Filter>
+    </ClCompile>
+    <ClCompile Include="ExpressionFunction.cpp">
+      <Filter>Kernel</Filter>
+    </ClCompile>
+    <ClCompile Include="ExpressionLambda.cpp">
+      <Filter>Kernel</Filter>
+    </ClCompile>
+    <ClCompile Include="ExpressionType.cpp">
+      <Filter>Kernel</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="main.lm" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="test.lm">
+      <Filter>test</Filter>
+    </Text>
+  </ItemGroup>
+</Project>

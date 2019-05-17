@@ -1,0 +1,836 @@
+
+# ââéZéq
+operator ^ (2, 10) => pow
+operator * (2, 9) => mul
+operator / (2, 9) => div
+operator % (2, 9) => mod
+operator + (2, 8) => add
+operator - (2, 8) => sub
+operator = (2, 7) => equals
+operator < (2, 7) => less
+operator > (2, 7) => larger
+operator <=(2, 7) => lesse
+operator >=(2, 7) => largere
+operator ~ (1, 6, right) => not
+operator & (2, 5) => and
+operator | (2, 5) => or
+operator = (2, 4) => equals
+operator ->(2, 3) => implies
+operator <->(2, 3) => iff
+operator =>(2, 2) => simpl
+
+# ñΩëË
+type Prop
+undef True: Prop
+undef False: Prop
+undef and(A, B: Prop): Prop
+undef or(A, B: Prop): Prop
+undef not(A: Prop): Prop
+
+axiom {
+	not(False) => True
+}
+
+axiom {
+	not(True) => False
+}
+
+axiom (A: Prop) {
+	not(not(A)) => A
+}
+
+axiom (A, B: Prop) {
+	A & B = B & A
+}
+
+axiom (A, B, C: Prop) {
+	A & (B & C) = (A & B) & C
+}
+
+axiom (A, B: Prop) {
+	A | B = B | A
+}
+
+axiom (A, B, C: Prop) {
+	A | (B | C) = (A | B) | C
+}
+
+axiom (A: Prop) {
+	A & True => A
+}
+
+axiom (A: Prop) {
+	A | True => True
+}
+
+# é¿êî
+undef add(a, b: R): R
+undef div(a, b: R): R
+undef mul(a, b: R): R
+undef sub(a, b: R): R
+
+undef inv(a: R): R
+undef mns(a: R): R
+
+undef 0: R
+undef 1: R
+
+type R {
+name(jp):
+	"é¿êî"
+}
+
+axiom (a, b: R) {
+	a + b = b + a
+}
+
+axiom (a, b, c: R) {
+	a + (b + c) = (a + b) + c
+}
+
+axiom (a: R) {
+	a + 0 => a
+}
+
+axiom (a, b: R) {
+	a * b = b * a
+}
+
+axiom (a, b, c: R) {
+	a * (b * c) = (a * b) * c
+}
+
+axiom (a: R) {
+	a * 1 => a
+}
+
+axiom (a: R) {
+	a + mns(a) => 0
+}
+
+axiom (a: R) {
+	a * inv(a) => 1
+}
+
+undef equals(a, b: R): R
+undef less(a, b: R): R
+undef larger(a, b: R): R
+undef lesse(a, b: R): R
+undef largere(a, b: R): R
+
+# îΩéÀó•
+axiom (a: R) {
+	a <= a => True
+}
+
+# êÑà⁄ó•
+axiom (a, b: R) { 
+	a <= b & b <= a -> a = b
+}
+
+axiom (a, b, c: R) { 
+	a <= b & b <= c -> a <= c
+}
+
+axiom (a, b: R) { 
+	a <= b | b <= a => True
+}
+
+axiom (a, b, c: R) {
+	a + c <= b + c -> a <= b 
+}
+
+axiom (a, b: R) {
+	a >= 0 & b >= 0 -> a * b >= 0
+}
+
+type MaxOf(A: Type(R)) extends A {
+	forall x: A
+	x <= $
+name:
+	"$AÇÃç≈ëÂå≥"
+}
+
+type MinOf(A: Type(R)) extends A {
+	forall x: A
+	$ <= x
+name:
+	"$AÇÃç≈è¨å≥"
+}
+
+type ExistsMax(A: Type(R)) {
+	exists a[A]: A
+	a.MaxOf(A)
+name:
+	"ç≈ëÂå≥Ç™ë∂ç›Ç∑ÇÈèWçá"
+}
+
+type ExistsMin(A: Type(R)) {
+	exists a[A]: A
+	a.MinOf(A)
+name:
+	"ç≈è¨å≥Ç™ë∂ç›Ç∑ÇÈèWçá"
+}
+
+def max(A: Type(R)): A {
+	suchone MaxOf(A)
+latex:
+	"\max{$A}"
+}
+
+def min(A: Type(R)): A {
+	suchone MinOf(A)
+latex:
+	"\min{$A}"
+}
+
+type UpperOf(A: Type(R)) extends R { 
+	forall x: A
+	x <= $
+name:
+	"$AÇÃè„äEÇÃèWçá"
+}
+
+type LowerOf(A: Type(R)) extends R { 
+	forall x: A
+	$ <= x
+name:
+	"$AÇÃâ∫äEÇÃèWçá"
+}
+
+type BoundedAbove(A: Type(R)) extends A {
+	exists Max($)
+name:
+	"è„Ç…óLäEÇ»èWçá"
+}
+
+type BoundedBelow(A: Type(R)) extends A {
+	exists Min($)
+name:
+	"â∫Ç…óLäEÇ»èWçá"
+}
+
+type Bounded(A: Type) extends BoundedAbove(A) & BoundedBelow(A) {
+name:
+	"óLäEÇ»èWçá"
+}
+
+type InfOf(A: Type) extends {
+	$.MinOf(UpperOf(A))
+
+
+	forall x, y: A
+	x <= y -> $ <= y
+}
+
+type SupOf(A: Type) extends MaxOf(LowerOf(A)) {
+}
+
+def inf(A: Type): A {
+	suchone InfOf(A)
+}
+
+def sup(A: Type): A {
+	suchone SupOf(A)
+}
+
+theorim <T: R>(m: A, A: T) {
+	forall a: A | x: R
+	exists b: A
+	m.Inf(A) => a <= m & (x < m -> x < a)
+proof:
+	step a.InfOf(A)
+	step a.MinOf(UpperOf(A))
+	where forall(a: A){a <= m} & $ {
+		forall(x: R){forall(a: A){a <= x}->m <= x}
+	}
+}
+
+theorim (B: Type | A: ExistsMax(B)) {
+	MaxOf = SupOf
+proof:
+	forall x: A
+	x <= m
+
+	forall a: A | x: R
+	exists b: A
+	m.Inf(A) => a <= m & (x < m -> x < a)
+
+
+	forall x: A
+	x <= $
+
+
+	step MaxOf(LowerOf(A))
+
+	forall x: A
+	x <= $
+
+
+	exists a[A]: A
+	a.MaxOf(A)
+}
+
+theorim (B: Type | A: ExistsMin(B)) {
+	MinOf(A) => InfOf(A)
+}
+
+
+type Converge(a: R) extends R->R {
+	forall eps: PosR
+	exists n_0[eps]: N 
+	forall n: N
+	n >= n_0 -> dist(a, $(n)) < eps
+name[jp, do]:
+	"$aÇ…é˚ë©Ç∑ÇÈ"
+}
+
+type Converge(f: Seq) {
+	exsist a: N
+	$.Converge(f, a)
+}
+
+def lim(infty, f: Seq) {
+	exists a: N
+	suchone Converge(f, a)
+latex:
+	"\lim_{n\to\infty}{$f(n)}"
+}
+
+such x->R(x) = f(such x->P(x), such x->Q(x))
+
+undef such<A>(P: A->Prop): A
+
+axiom <A>(P: A->Prop, a: A) {
+	a = such P => P(x)
+}
+
+axiom <A>(P: A->Prop | a, b: A) {
+	P[b] <=> a = b -> P(a)
+}
+
+theorim <A>(P, Q, R: A->Prop, f: (A, A)->A) {
+	R(f(such P, such Q)) => P(a) & Q(a) -> R(f(a, b))
+proof:
+	step b = such Q -> R(f(such P, b))
+	step a = such P -> b = such Q -> R(f(a, b))
+	step P(a) -> Q(b) -> R(f(a, b))
+	step P(a) & Q(b) -> R(f(a, b))
+}
+
+theorim (A, B, P, Q: Prop) {
+	((A -> P) & (B -> Q)) -> ((A & B) -> (P & Q))
+proof:
+	step (A -> P) & (B -> Q)
+	step (~A | P) & (~B | Q)
+	step ~A & ~B | ~A & Q | P & ~B | P & Q
+	impl ~A & ~B | ~A | P & ~B | P & Q
+	impl ~A & ~B | ~A | ~B | P & Q
+	step ~(A | B) | ~(A & B) | (P & Q)
+	step ((A | B) & (A & B)) -> P & Q
+	step (A & B & A | B & A & B) -> P & Q
+	step (A & B | A & B) -> P & Q
+	step (A & B) -> (P & Q)
+}
+
+theorim (f: Converge(a), g: Converge(b)) { 
+	lim(n->f[n]+g[n]) => a + b
+proof:
+	target all
+	step such a->(n->f[n]+g[n]).Converge(a) = a + b
+	step (n->f[n]+g[n]).Converge(a + b)
+	cotx f.Converge(a) & g.Converge(b) -> (n->f[n]+g[n]).Converge(a + b)
+	target left
+	step n >= n_1 -> dist(a, f(n)) < eps & n >= n_2 -> dist(b, g(n)) < eps
+	step (n >= n_1 & n >= n_2) -> (dist(a, f(n)) < eps & dist(b, g(n)) < eps)
+	step (n >= n_1 & n >= n_2) -> dist(a+b, f(n)+g(n)) < eps
+	step n >= max(n_1, n_2) -> dist(a+b, f(n)+g(n)) < eps
+	step n >= n_0 -> dist(a+b, f(n)+g(n)) < eps
+}
+
+theorim (f: Converge(a), g: Converge(b)) {
+	lim(n->f[n]*g[n]) => lim(f) * lim(g)
+proof:
+	target all
+	cotx f.Converge(a) & g.Converge(b) -> (n->f[n]*g[n]).Converge(a*b)
+	target left
+	let M = max(max(f, g))
+	step n >= n_1 -> dist(a, f(n)) < eps/(2*M) & n >= n_2 -> dist(b, g(n)) < eps/(2*abs(a)+1)
+	impl (n >= n_1 & n >= n_2) -> dist(a, f(n)) < eps/(2*M) & dist(b, g(n)) < eps/(2*abs(a)+1)
+	where (n >= n_1 & n >= n_2) -> $ {
+		step dist(a*b, f(n)*g(n)) <= abs(a*(b-g(n))) + abs(g(n)*(a-f(n)))
+		step dist(a*b, f(n)*g(n)) <= abs(a)*dist(b, g(n)) + abs(g(n))*dist(a, f(n))
+		step dist(a*b, f(n)*g(n)) <= eps
+	}
+}
+
+theorim (a, b, x: R) [
+	dist(a, b) < x -> abs(a) - abs(b) < x
+]
+
+def abs(a: R) {
+	max(a, -a)
+}
+
+def dist(a, b: R) {
+	abs(a - b)
+}
+
+theorim (a: R) {
+	abs(-a) => abs(a)
+proof:
+	step max(-a, --a)
+	step max(-a, a)
+	step abs(a)
+}
+
+theorim (a, b: R) {
+	dist(a, b) = dist(b, a)
+proof:
+	step abs(a - b)
+	step abs(-(a - b))
+	step abs(b - a)
+	step dist(b, a)
+}
+
+theorim (a, b: R) {
+	dist(a, b) / abs(a * b) => dist(1 / a, 1 / b)
+proof:
+	step abs(a - b) / abs(a * b)
+	step abs((a - b) / (a * b))
+	step abs(1 / b - 1 / a)
+	step dist(1 / b, 1 / a)
+	step dist(1 / a, 1 / b)
+}
+
+theorim (f: Converge(a)) {
+	lim(n->1/f[n]) => 1/a
+proof:
+	target all
+	step such b->(n->1/f[n]).Converge(b) = 1/a
+	step (n->1/f[n]).Converge(1/a)
+	down f.Converge(a) -> (n->1/f[n]).Converge(1/a)
+	target left
+	forall eps: Pos(R)
+	fork when n >= n_1 {
+		unfold dist(a, f(n)) < eps2
+		impl dist(a, f(n)) < eps * abs(a)^2 / 2
+		step 2 * dist(a, f(n)) / abs(a)^2 < eps
+	}
+	fork when n >= n_2 {
+		unfold dist(a, f(n)) < eps1
+		impl dist(a, f(n)) < abs(a) / 2
+		impl abs(a) - abs(f(n)) < abs(a) / 2
+		step abs(a) / abs(f(n)) / 2 < 1
+	}
+	step (n >= n_2 -> 2 * dist(a, f(n)) / abs(a)^2 < eps) & (n >= n_1 -> abs(a) / abs(f(n)) / 2 < 1)
+	when n >= n_1 & n >= n_2 {
+		impl 2 * dist(a, f(n)) / abs(a)^2 < eps & abs(a) / abs(f(n)) / 2 < 1
+		impl 2 * dist(a, f(n)) / abs(a)^2 * abs(a) / abs(f(n)) / 2 < eps
+		step dist(a, f(n)) / abs(a) / abs(f(n)) < eps
+		impl dist(a, f(n)) / abs(a*f(n)) < eps
+		step dist(1/a, 1/f(n)) < eps
+	}
+	step n >= max(n_1, n_2) -> dist(1/a, 1/f(n)) < eps
+	exists n_0[eps]: N
+	impl n >= n_0 -> dist(1/a, 1/f(n)) < eps
+	fold (n->1/f[n]).Converge(1/a)
+}
+
+theorim (f, g: N->R) {
+	lim(n->f[n]/g[n]) => lim(f) / lim(g)
+proof:
+	step lim(n->f[n]*1/g[n])
+	step lim(f) * lim(n->1/g(n))
+	step lim(f) * 1 / lim(g)
+	step lim(f) / lim(g)
+}
+
+
+# ëΩçÄéÆ
+type Prox(t: N) extends N->R {
+	
+}
+
+theorim (f: Prox(t)) {
+	lim(n->(f[n]+g[n])/n^t) => lim(n->f[n]/n^t) + lim(n->g[n]/n^t)
+}
+
+theorim (f: Prox(t), g: Prox(u)) {
+	lim(n->f[n] / g[n]) => lim(n->f(n)/n^t) / lim(n->g(n)/n^t)
+}
+
+theorim (A: NotEmpty(A), B: NotEmpty(BoundedAbove(B))) {
+	contains(A, B) -> BoundedAbove(A)
+}
+
+theorim (A: NotEmpty(BoundedAbove(A)), B: NotEmpty(BoundedAbove(B))) {
+	contains(A, B) -> sup(A) <= sup(B)
+}
+
+theorim (A: NotEmpty(A), B: NotEmpty(BoundedAbove(B))) {
+	contains(A, B) => BoundedBelow(A)
+}
+
+theorim (A: NotEmpty(BoundedBelow(A)), B: NotEmpty(BoundedBelow(B))) {
+	contains(A, B) -> inf(A) <= inf(B)
+}
+
+theorim {
+	(n->1/n).Converge(0)
+proof:
+	target all
+	unfd n >= n_0 -> dist(0, 1/n) < eps
+	step eps <= dist(0, 1/n) -> n < n_0
+	target left
+	step eps <= 1/n
+	step n <= 1/eps
+	impl n < 1/eps+1
+	impl n < n_0
+}
+
+theorim (x: NotNeg(LessOne(R))) {
+	(n->x^n).Converge(0)
+proof:
+	target all
+	unfd n >= n_0 -> dist(0, x^n) < eps
+	step eps <= dist(0, x^n) -> n < n_0
+	target left
+	step eps <= x^n
+	step 
+}
+
+theorim (a, b: Pos(R)) {
+	exists n[a, b]: N
+	n * a > b
+name:
+	"ÉAÉãÉLÉÅÉfÉXÇÃå¥óù"
+desc:
+	"$bÇÕêîóÒ(n$a)_{n\in\mathbb{N}}ÇÃè„äEÇ≈ÇÕÇ»Ç¢"
+proof:
+	step n > b / a
+
+}
+
+type Disverge extends Seq {
+	forall n: N
+	forall M: R
+	exists n_0[M]: N
+	n >= n_0 -> $(n) > M
+name:
+	"î≠éUÇ∑ÇÈ"
+}
+
+theorim {
+	(n->n).Disverge
+proof:
+	target all
+	unfd n >= n_0 -> n > M
+	step n <= M -> n < n_0
+	target left
+	impl n < M + 1
+	impl n < n_0
+}
+
+
+
+def diverge(f: nat->real) => forall(n->forall(R, M->exists(n_0->n>=n_0=>f(n)>M)))
+	jpn "$fÇÕî≠éUÇ∑ÇÈ"
+
+
+theorim {
+	lim(n/x^n) = 0 where(x: x->x>1)
+}
+
+
+
+type CauchySeq extends Seq {
+	forall eps: Pos(R) | n, m: N
+	exists n_0[eps]: N
+	m >= n_0 & n >= n_0 -> dist($(m), $(n)) < eps
+}
+
+theorim (f: CauchySeq) {
+	f.Bounded
+proof:
+	target context
+	unfold m >= n_1 & n >= n_1 -> dist(f(m), f(n)) < eps
+	when m >= n_1 & n >= n_1 {
+		impl dist(f(m), f(n)) < 1
+		step -1 < f(n) - f(m) < 1
+		step f(m) - 1 < f(n) < f(m) + 1
+		impl f(n_1) - 1 < f(n) < f(n_1) + 1
+	}
+	impl n >= n_1 -> f(n_1) - 1 < f(n) < f(n_1) + 1
+}
+
+theorim {
+	CauchySeq <-> Converge
+proof(->):
+	target context
+	forall f: Seq
+	step f.Converge
+	unfold n >= n_0 -> dist(a, f(n)) < eps
+	forall m: N
+	step n >= n_0 -> dist(a, f(n)) < eps & m >= n_0 -> dist(a, f(n)) < eps
+	when n >= n_0 & m >= n_0 {
+		impl dist(a, f(n)) < eps & dist(m, f(m)) < eps
+		impl dist(a, f(n)) + dist(m, f(m)) < eps
+		impl dist(f(n), f(m)) < eps
+	}
+	step f.CauchySeq
+proof(<-):
+	target context
+	step f.CauchySeq
+	impl f.Bounded
+	exists g: Bounded
+	impl PartSeq(f, g).Converge
+	step f.Converge
+}
+
+theorim (a: R) {
+	existsone n: N
+	n <= a < n + 1
+proof:
+	target gen
+	unfold m * b > a
+	impl m * (-1) > a
+	step m > -a
+	step 0 < m + a
+	let l: R = m + a + 1
+	step l - 1 <= m + a < l
+	step l - m - 1 <= a < l - m
+	let t: R = l - m - 1
+	step t <= a < t + 1
+	exists n: N
+	impl n <= a < n + 1
+}
+
+def partSeq(f: Seq, g: MonoIncrease) {
+	func(n: N){ f(g(n)) }
+}
+
+theorim (f: CauchySeq, g: MonoIncrease) {
+	partSeq(f, g).Converge -> f.Converge
+proof:
+	step f.CauchySeq
+	unfold n >= n_0 & m >= n_0 -> dist(f(n), f(m)) < eps / 2
+	step k >= n_0 & g(k) >= n_0 -> dist(f(k), f(g(k))) < eps / 2
+	impl k >= n_0 -> dist(f(k), f(g(k))) < eps / 2 
+}
+
+type RVec(n: N) extends NSub(1, n)->R {
+
+}
+
+def equal(a: RVec(n), b: RVec(n)) {
+	forall i: NSub(1, N)
+	a(i) = b(i)
+}
+
+def add(a: RVec(n), b: RVec(n)) {
+	func(i: NSub(1, N)){ a(i) + b(i) }
+}
+
+def mul(a: RVec(n), b: RVec(n)) {
+	func(i: NSub(1, N)){ a(i) * b(i) }
+}
+
+def mns(a: RVec(n), b: RVec(n)) {
+	func(i: NSub(1, N)){ -a(i) }
+}
+
+theorim (a, b: R | x, y: RVec(n)) {
+	a * (x + y) = a * x + a * y
+proof:
+	fun(m: natSub(1, n)) => 
+		a*(x(m)+y(m))
+		a*x(m)+a*y(m)
+	a*x+a*y
+}
+
+theorim (a, b: R | x, y: RVec(n)) {
+	(a+b)*x = a*x+b*x
+proof:
+	where(fun(m: natSub(1, n)) => $) {
+		step (a+b)*(x(m))
+		step a*x(m)+b*x(m)
+	}
+	fun(t: natSub(1, n)) =>
+		(fun(m: natSub(1, n)) => a*x(m))(t)+(fun(m: natSub(1, n)) => b*x(m))(t)
+		(a*x)(t)+(b*x)(t)
+	a*x+b*x
+}
+
+theorim (a, b: R | x, y: RVec(n)) {
+	(a*b)*x = a*(b*x)
+proof:
+	(a*b)*x
+	fun(m: natSub(1, n)): 
+		(a*b)*x(m)
+		a*(b*x(m))
+	a*fun(m: natSub(1, n)): (b*x(m))
+	a*(b*x)	
+}
+
+theorim (a, b: R | x, y: RVec(n)) {
+	1*x=x
+proof:
+	fun(m: natSub(1, n)) => 
+		1*x(m)
+		x(m)
+	x
+}
+
+def dot(x: RVec(n), y: RVec(n)) {
+	sum(1, n, fun k: x(k)+y(k))
+}
+
+theorom (x, y: RVec(n)) {
+	dot(x, y) = dot(y, x)
+}
+
+theorom (x, y: RVec(n)) {
+	dot(x + y, z) = dot(x, z) + dot(y, z)
+}
+
+theorom (a: R | x, y: RVec(n)) {
+	dot(a * x, y) = a * dot(x, y)
+}
+
+theorom (x: RVec(n)) {
+	dot(x, x) >= 0
+}
+
+def abs(x: RVec(n)) {
+	sqrt(dot(x, x))
+}
+
+theorim (x, y: RVec(n)) {
+	abs(dot(x, y)) <= abs(x)*abs(y)
+}
+
+def dist(x, y: RVec(n)) {
+	abs(dot(x, y)) <= abs(x)*abs(y)
+name:
+	"ÉVÉÖÉèÉãÉcÇÃïsìôéÆ"
+}
+
+theorim (x, y: RVec(n)) {
+	dist(x, y) = dist(y, x)
+}
+
+theorim (x, y, z: RVec(n)) {
+	dist(x, z) <= dist(x, y) + dist(y, z)
+}
+
+theorim (x, y: RVec(n)) {
+	dist(x, y) >= 0
+}
+
+alisa PointSeq(n) = N->RVec(n) {
+}
+
+# 52p
+theorim (a: R | x, y: RVec(n)) {
+	abs(a * x) => abs(a) * abs(x)
+}
+
+theorim (x, y: RVec(n)) {
+	abs(x + y) <= abs(x) + abs(y)
+proof:
+	target all
+	step abs(x + y)^2 <= (abs(x) + abs(y))^2
+	step abs(x)^2 + 2*dot(x, y) + abs(y)^2 <= abs(x)^2 + 2*abs(x)*abs(y) + abs(y)^2
+	step dot(x, y) <= abs(x)*abs(y)
+	impl abs(dot(x, y)) <= abs(x)*abs(y)
+	step True
+}
+
+theorim (x, y: RVec(n)) {
+	abs(x) >= 0
+proof:
+	step dot(x, x) >= 0
+	step True
+}
+
+# 53p
+def ConvergePointSeq(n, a) extends PointSeq(n) {
+	forall eps: Pos(R) | m: N
+	exists n_0[eps]: N
+	m >= n_0 -> dist($(m), a) < eps
+}
+
+theorim (a: ConvergePointSeq(n) | b: RVec(n)) {
+	forall k: NSub(1, n)
+	a(m)(k).Converge(n(k))
+proof:
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+theorim (A, B: Prop) {
+	~(A & B) => ~A | ~B
+proof(->):
+	target all
+	step ~(A & B) -> (~A | ~B)
+	step (A & B) | (~A | ~B)
+	step (A | ~A | ~B) & (B | ~A | ~B)
+	step True
+proof(<-):
+	target all
+	step (~A | ~B) -> ~(A & B) 
+	step (A & B) -> ~(~A | ~B)
+	target left
+	step ~~(A & B)
+	impl ~(~A | ~B) 
+}
+
+theorim (A, B: Prop) {
+	~(A | B) => ~A & ~B
+proof(->):
+	target all
+	step ~(A | B) -> (~A & ~B)
+	step (A | B) | (~A & ~B)
+	step (A | B | ~A) & (A | B | ~B)
+	step True
+proof(<-):
+	target all
+	step (~A & ~B) -> ~(A | B)
+	step (A | B) -> ~(~A & ~B)
+	target left
+	step ~~(A | B)
+	impl ~(~A & ~B)
+}
+
+theorim (A, B, P, Q: Prop) {
+	((A -> P) & (B -> Q)) -> ((A & B) -> (P & Q))
+proof:
+	step (A -> P) & (B -> Q)
+	step (~A | P) & (~B | Q)
+	step ~A & ~B | ~A & Q | P & ~B | P & Q
+	impl ~A & ~B | ~A | P & ~B | P & Q
+	impl ~A & ~B | ~A | ~B | P & Q
+	step ~(A | B) | ~(A & B) | (P & Q)
+	step ((A | B) & (A & B)) -> P & Q
+	step (A & B & A | B & A & B) -> P & Q
+	step (A & B | A & B) -> P & Q
+	step (A & B) -> (P & Q)
+}

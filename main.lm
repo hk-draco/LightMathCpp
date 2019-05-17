@@ -1,0 +1,55 @@
+
+
+undef func(a, b: T): R
+
+undef add:
+	(R, R)->R
+
+object add(a, b: R)->R:
+	undef
+name:
+	"plus"
+end
+
+axiom (a, b: T):
+	a + b = b + a
+
+theorim (a, b: T) {
+	a + b = b + a
+proof:
+	start a + b
+}
+
+def plus(a, b: T) {
+	a + b
+}
+
+
+bool need_ident
+bool need_var_dec
+bool theorim
+
+
+(A È (A -> B)) -> B
+(A & (~A | B)) -> B
+
+
+
+axiom  {
+	
+
+}
+
+
+
+f: integrable(a, b) | a, b: R
+
+type Integrable(a, b: R) extends R->R
+
+type NotZero(T: type) extends T:
+	this != 0
+desc:
+	"0‚Å‚Í‚È‚¢$T"
+
+
+

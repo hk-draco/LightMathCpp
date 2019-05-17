@@ -1,0 +1,738 @@
+
+# 実数
+undef add(a, b: R): R
+undef div(a, b: R): R
+undef mul(a, b: R): R
+undef sub(a, b: R): R
+
+undef inv(a: R): R
+undef mns(a: R): R
+
+undef 0: R
+undef 1: R
+
+type R
+
+axiom (a, b: R) {
+	a + b = b + a
+}
+
+axiom (a, b, c: R) {
+	a + (b + c) = (a + b) + c
+}
+
+axiom (a: R) {
+	a + 0 => a
+}
+
+axiom (a, b: R) {
+	a * b = b * a
+}
+
+axiom (a, b, c: R) {
+	a * (b * c) = (a * b) * c
+}
+
+axiom (a: R) {
+	a * 1 => a
+}
+
+axiom (a: R) {
+	a + mns(a) => 0
+}
+
+axiom (a: R) {
+	a * inv(a) => 1
+}
+
+undef equals(a, b: R): R
+undef less(a, b: R): R
+undef larger(a, b: R): R
+undef lesse(a, b: R): R
+undef largere(a, b: R): R
+
+# 反射律
+axiom (a: R) {
+	a <= a => True
+}
+
+# 推移律
+axiom (a, b: R) { 
+	a <= b & b <= a -> a = b
+}
+
+axiom (a, b, c: R) { 
+	a <= b & b <= c -> a <= c
+}
+
+axiom (a, b: R) { 
+	a <= b | b <= a => True
+}
+
+axiom (a, b, c: R) {
+	a + c <= b + c -> a <= b 
+}
+
+axiom (a, b: R) {
+	a >= 0 & b >= 0 -> a * b >= 0
+}
+
+# 極限
+type Converge(a: R) extends N->R {
+	forall eps: PosR
+	exists n_0[eps]: N 
+	forall n: N
+	n >= n_0 -> dist(a, $(n)) < eps
+}
+
+#type Converge {
+#	exsist a: N
+#	$.Converge(f, a)
+#}
+
+def lim(f: Seq) {
+	exists a: N
+	suchone Converge(f, a)
+latex:
+	"\lim_{n\to\infty}{$f(n)}"
+}
+
+such x->R(x) = f(such x->P(x), such x->Q(x))
+
+undef such<A>(P: A->Prop): A
+operator such(1, 11, right) => such
+
+axiom <A>(P: A->Prop, a: A) {
+	a = such P => P(x)
+}
+
+axiom <A>(P: A->Prop | a, b: A) {
+	P[b] <=> a = b -> P(a)
+}
+
+theorim <A>(P, Q, R: A->Prop, f: (A, A)->A) {
+	R(f(such P, such Q)) => P(a) & Q(a) -> R(f(a, b))
+proof:
+	step b = such Q -> R(f(such P, b))
+	step a = such P -> b = such Q -> R(f(a, b))
+	step P(a) -> Q(b) -> R(f(a, b))
+	step P(a) & Q(b) -> R(f(a, b))
+}
+
+theorim (f: Converge(a), g: Converge(b)) { 
+	lim(n->f[n]+g[n]) => a + b
+proof:
+	target all
+	step such a->(n->f[n]+g[n]).Converge(a) = a + b
+	step (n->f[n]+g[n]).Converge(a + b)
+	cotx f.Converge(a) & g.Converge(b) -> (n->f[n]+g[n]).Converge(a + b)
+	target left
+	step n >= n_1 -> dist(a, f(n)) < eps & n >= n_2 -> dist(b, g(n)) < eps
+	step (n >= n_1 & n >= n_2) -> (dist(a, f(n)) < eps & dist(b, g(n)) < eps)
+	step (n >= n_1 & n >= n_2) -> dist(a+b, f(n)+g(n)) < eps
+	step n >= max(n_1, n_2) -> dist(a+b, f(n)+g(n)) < eps
+	step n >= n_0 -> dist(a+b, f(n)+g(n)) < eps
+}
+
+theorim (f: Converge(a), g: Converge(b)) {
+	lim(n->f[n]*g[n]) => lim(f) * lim(g)
+proof:
+	target context
+	let M = max(max(f, g))
+	fork {
+		impl f.Converge(a)
+		unfold n >= n_1 -> dist(a, f(n)) < eps/(2*M)
+	}
+	fork {
+		impl g.Converge(b)
+		unfold n >= n_2 -> dist(b, g(n)) < eps/(2*abs(a)+1)
+	}
+	when n >= n_1 & n >= n_2 {
+		impl dist(a, f(n)) < eps/(2*M) & dist(b, g(n)) < eps/(2*abs(a)+1)
+		impl dist(a*b, f(n)*g(n)) <= abs(a*(b-g(n))) + abs(g(n)*(a-f(n)))
+		step dist(a*b, f(n)*g(n)) <= abs(a)*dist(b, g(n)) + abs(g(n))*dist(a, f(n))
+		step dist(a*b, f(n)*g(n)) <= eps
+	}
+}
+
+theorim (a, b, x: R) [
+	dist(a, b) < x -> abs(a) - abs(b) < x
+]
+
+def abs(a: R) {
+	max(a, -a)
+}
+
+def dist(a, b: R) {
+	abs(a - b)
+}
+
+theorim (a: R) {
+	abs(-a) => abs(a)
+proof:
+	step max(-a, --a)
+	step max(-a, a)
+	step abs(a)
+}
+
+theorim (a, b: R) {
+	dist(a, b) = dist(b, a)
+proof:
+	step abs(a - b)
+	step abs(-(a - b))
+	step abs(b - a)
+	step dist(b, a)
+}
+
+theorim (a, b: R) {
+	dist(a, b) / abs(a * b) => dist(1 / a, 1 / b)
+proof:
+	step abs(a - b) / abs(a * b)
+	step abs((a - b) / (a * b))
+	step abs(1 / b - 1 / a)
+	step dist(1 / b, 1 / a)
+	step dist(1 / a, 1 / b)
+}
+
+theorim (f: Converge(a)) {
+	lim(n->1/f[n]) => 1/a
+proof:
+	target all
+	step such b->(n->1/f[n]).Converge(b) = 1/a
+	step (n->1/f[n]).Converge(1/a)
+	target context
+	step f.Converge(a)
+	forall eps: Pos(R)
+	fork when n >= n_1 {
+		unfold dist(a, f(n)) < eps2
+		impl dist(a, f(n)) < eps * abs(a)^2 / 2
+		step 2 * dist(a, f(n)) / abs(a)^2 < eps
+	}
+	fork when n >= n_2 {
+		unfold dist(a, f(n)) < eps1
+		impl dist(a, f(n)) < abs(a) / 2
+		impl abs(a) - abs(f(n)) < abs(a) / 2
+		step abs(a) / abs(f(n)) / 2 < 1
+	}
+	# step (n >= n_2 -> 2 * dist(a, f(n)) / abs(a)^2 < eps) & (n >= n_1 -> abs(a) / abs(f(n)) / 2 < 1)
+	when n >= n_1 & n >= n_2 {
+		impl 2 * dist(a, f(n)) / abs(a)^2 < eps & abs(a) / abs(f(n)) / 2 < 1
+		impl 2 * dist(a, f(n)) / abs(a)^2 * abs(a) / abs(f(n)) / 2 < eps
+		step dist(a, f(n)) / abs(a) / abs(f(n)) < eps
+		impl dist(a, f(n)) / abs(a*f(n)) < eps
+		step dist(1/a, 1/f(n)) < eps
+	}
+	step n >= max(n_1, n_2) -> dist(1/a, 1/f(n)) < eps
+	exists n_0[eps]: N
+	impl n >= n_0 -> dist(1/a, 1/f(n)) < eps
+	fold (n->1/f[n]).Converge(1/a)
+}
+
+	
+
+
+
+
+2 * x / a^2 * a / b / 2 < t
+2 * x / a^2 * a / b / 2 - t < 0
+(2 * x * a) / (a^2 * b * 2) - t < 0
+x / (a * b) - t < 0
+
+x / a / b < t
+x / a / b - t < 0
+x / (a * b) - t < 0
+
+abs(a) - abs(f(n)) < abs(a) / 2
+abs(a) - abs(f(n)) - abs(a) / 2 < 0
+abs(a) / 2 - abs(f(n)) < 0
+abs(a) - 2 * abs(f(n)) < 0
+abs(a) / abs(f(n)) / 2 - 1 < 0
+abs(a) / abs(f(n)) / 2 < 1
+
+
+[x - y < x / [(3 - 1), 2], [x - y - x / 2, x / 2 - y, x - y * 2, x - 2 * y] < 0]
+[x - 2 * y < 0, x < [2 * y, y * 2], x / y / 2 < 1]
+
+
+[(x + b/(2*a))^2, x^2+[2*b/(2*a)*x, b/a*x]+[(b/(2*a))^2, b^2/(4*a^2)] = b^2/(4*a^2) - c/a, x^2+b/a*x=- c/a, x^2+b/a*x+c/a=0]
+
+
+a * x^2 + b * x + c = 0
+x^2 + b/a * x + c/a = 0
+(x + b/(2*a))^2 = b^2/(4*a^2) - c/a
+x + b/(2*a) = pm(sqrt(b^2/(4*a^2)) - c/a)
+x = pm(sqrt(b^2 - 4*a^2*c/a)) / (2*a) - b/(2*a)
+x = (-b + pm(sqrt(b^2 - 4*a^2*c/a))) / (2*a)
+
+
+x^2=c <=> 
+
+(x+a)^2=c
+x+a=sqrt(c)
+
+
+x+a=pm(sqrt(c))
+
+
+
+
+x^2 + b/a*x - b^2/x^2/4
+
+
+x = -b+pm(sqrt(b^2-4*a*c))/2*a
+
+
+
+
+[x - y < x / [(3 - 1), 2], [x - y - x / 2, x / 2 - y, x - y * 2, x - 2 * y] < 0, x < [2 * y, y * 2], x / y / 2 < 1]
+
+
+
+[x / y / 2 < 1, x < [y * 2, 2 * y], x - 2 * y < 0]
+
+
+
+[x - y < x / [(3 - 1), 2], [x - y - x / 2, x / 2 - y, x - y * 2, x - 2 * y] < 0]
+x - y < x / (3 - 1)
+x - y < x / 2
+x - y - x / 2 < 0
+x / 2 - y < 0
+x - y * 2 < 0
+x - 2 * y < 0
+
+[x / y / 2 < 1, x < [y * 2, 2 * y], x - 2 * y < 0]
+x / y / 2 < 1
+x < y * 2
+x < 2 * y
+x - 2 * y < 0
+
+
+
+x - y < x / (3 - 1)
+x - y < x / 2
+x - y - x / 2 < 0
+x / 2 - y < 0
+x - y * 2 < 0
+x - 2 * y < 0
+x - 2 * y < 0
+x < 2 * y
+x < y * 2
+x / y / 2 < 1
+
+
+
+= abs(a) - abs(f(n)) < abs(a) / 2
+abs(a) - abs(f(n)) - abs(a) / 2 < 0
+abs(a) / 2 - abs(f(n)) < 0
+abs(a) - 2 * abs(f(n)) < 0
+
+= abs(a) / abs(f(n)) / 2 < 1
+abs(a) / abs(f(n)) / 2 - 1 < 0
+abs(a) - 2 * abs(f(n)) < 0
+
+
+theorim (f, g: N->R) {
+	lim(n->f[n]/g[n]) => lim(f) / lim(g)
+proof:
+	step lim(n->f[n]*1/g[n])
+	step lim(f) * lim(n->1/g(n))
+	step lim(f) * 1 / lim(g)
+	step lim(f) / lim(g)
+}
+
+
+# 多項式
+type Prox(t: N) extends N->R {
+	
+}
+
+theorim (f: Prox(t)) {
+	lim(n->(f[n]+g[n])/n^t) => lim(n->f[n]/n^t) + lim(n->g[n]/n^t)
+}
+
+theorim (f: Prox(t), g: Prox(u)) {
+	lim(n->f[n] / g[n]) => lim(n->f(n)/n^t) / lim(n->g(n)/n^t)
+}
+
+theorim (A: NotEmpty(A), B: NotEmpty(BoundedAbove(B))) {
+	contains(A, B) -> BoundedAbove(A)
+}
+
+theorim (A: NotEmpty(BoundedAbove(A)), B: NotEmpty(BoundedAbove(B))) {
+	contains(A, B) -> sup(A) <= sup(B)
+}
+
+theorim (A: NotEmpty(A), B: NotEmpty(BoundedAbove(B))) {
+	contains(A, B) => BoundedBelow(A)
+}
+
+theorim (A: NotEmpty(BoundedBelow(A)), B: NotEmpty(BoundedBelow(B))) {
+	contains(A, B) -> inf(A) <= inf(B)
+}
+
+theorim {
+	(n->1/n).Converge(0)
+proof:
+	target all
+	unfd n >= n_0 -> dist(0, 1/n) < eps
+	step eps <= dist(0, 1/n) -> n < n_0
+	target left
+	step eps <= 1/n
+	step n <= 1/eps
+	impl n < 1/eps+1
+	impl n < n_0
+}
+
+theorim (x: NotNeg(LessOne(R))) {
+	(n->x^n).Converge(0)
+proof:
+	target all
+	unfd n >= n_0 -> dist(0, x^n) < eps
+	step eps <= dist(0, x^n) -> n < n_0
+	target left
+	step eps <= x^n
+	step 
+}
+
+theorim (a, b: Pos(R)) {
+	exists n[a, b]: N
+	n * a > b
+name:
+	"アルキメデスの原理"
+desc:
+	"$bは数列(n$a)_{n\in\mathbb{N}}の上界ではない"
+proof:
+	step n > b / a
+
+}
+
+type Disverge extends Seq {
+	forall n: N
+	forall M: R
+	exists n_0[M]: N
+	n >= n_0 -> $(n) > M
+name:
+	"発散する"
+}
+
+theorim {
+	(n->n).Disverge
+proof:
+	target all
+	unfd n >= n_0 -> n > M
+	step n <= M -> n < n_0
+	target left
+	impl n < M + 1
+	impl n < n_0
+}
+
+
+
+def diverge(f: nat->real) => forall(n->forall(R, M->exists(n_0->n>=n_0=>f(n)>M)))
+	jpn "$fは発散する"
+
+
+theorim {
+	lim(n/x^n) = 0 where(x: x->x>1)
+}
+
+
+
+type CauchySeq extends Seq {
+	forall eps: Pos(R) | n, m: N
+	exists n_0[eps]: N
+	m >= n_0 & n >= n_0 -> dist($(m), $(n)) < eps
+}
+
+theorim (f: CauchySeq) {
+	f.Bounded
+proof:
+	target context
+	unfold m >= n_1 & n >= n_1 -> dist(f(m), f(n)) < eps
+	when m >= n_1 & n >= n_1 {
+		impl dist(f(m), f(n)) < 1
+		step -1 < f(n) - f(m) < 1
+		step f(m) - 1 < f(n) < f(m) + 1
+		impl f(n_1) - 1 < f(n) < f(n_1) + 1
+	}
+	impl n >= n_1 -> f(n_1) - 1 < f(n) < f(n_1) + 1
+}
+
+theorim {
+	CauchySeq <-> Converge
+proof(->):
+	forall f: Seq
+	step f.Converge
+	dmat n >= n_0 -> dist(a, f(n)) < eps
+	forall m: N
+	step n >= n_0 -> dist(a, f(n)) < eps & m >= n_0 -> dist(a, f(n)) < eps
+	when n >= n_0 & m >= n_0 {
+		impl dist(a, f(n)) < eps & dist(m, f(m)) < eps
+		impl dist(a, f(n)) + dist(m, f(m)) < eps
+		impl dist(f(n), f(m)) < eps
+	}
+	step f.CauchySeq
+proof(<-):
+	target context
+	step f.CauchySeq
+	impl f.Bounded
+	exists g: Bounded
+	impl PartSeq(f, g).Converge
+	step f.Converge
+}
+
+theorim (a: R) {
+	existsone n: N
+	n <= a < n + 1
+proof:
+	target gen
+	unfold m * b > a
+	impl m * (-1) > a
+	step m > -a
+	step 0 < m + a
+	let l: R = m + a + 1
+	step l - 1 <= m + a < l
+	step l - m - 1 <= a < l - m
+	let t: R = l - m - 1
+	step t <= a < t + 1
+	exists n: N
+	impl n <= a < n + 1
+}
+
+def partSeq(f: Seq, g: MonoIncrease) {
+	func(n: N){ f(g(n)) }
+}
+
+theorim (f: CauchySeq, g: MonoIncrease) {
+	partSeq(f, g).Converge -> f.Converge
+proof:
+	step f.CauchySeq
+	unfold n >= n_0 & m >= n_0 -> dist(f(n), f(m)) < eps / 2
+	step k >= n_0 & g(k) >= n_0 -> dist(f(k), f(g(k))) < eps / 2
+	impl k >= n_0 -> dist(f(k), f(g(k))) < eps / 2 
+}
+
+type RVec(n: N) extends NSub(1, n)->R {
+
+}
+
+def equal(a: RVec(n), b: RVec(n)) {
+	forall i: NSub(1, N)
+	a(i) = b(i)
+}
+
+def add(a: RVec(n), b: RVec(n)) {
+	func(i: NSub(1, N)){ a(i) + b(i) }
+}
+
+def mul(a: RVec(n), b: RVec(n)) {
+	func(i: NSub(1, N)){ a(i) * b(i) }
+}
+
+def mns(a: RVec(n), b: RVec(n)) {
+	func(i: NSub(1, N)){ -a(i) }
+}
+
+theorim (a, b: R | x, y: RVec(n)) {
+	a * (x + y) = a * x + a * y
+proof:
+	fun(m: natSub(1, n)) => 
+		a*(x(m)+y(m))
+		a*x(m)+a*y(m)
+	a*x+a*y
+}
+
+theorim (a, b: R | x, y: RVec(n)) {
+	(a+b)*x = a*x+b*x
+proof:
+	where(fun(m: natSub(1, n)) => $) {
+		step (a+b)*(x(m))
+		step a*x(m)+b*x(m)
+	}
+	fun(t: natSub(1, n)) =>
+		(fun(m: natSub(1, n)) => a*x(m))(t)+(fun(m: natSub(1, n)) => b*x(m))(t)
+		(a*x)(t)+(b*x)(t)
+	a*x+b*x
+}
+
+theorim (a, b: R | x, y: RVec(n)) {
+	(a*b)*x = a*(b*x)
+proof:
+	(a*b)*x
+	fun(m: natSub(1, n)): 
+		(a*b)*x(m)
+		a*(b*x(m))
+	a*fun(m: natSub(1, n)): (b*x(m))
+	a*(b*x)	
+}
+
+theorim (a, b: R | x, y: RVec(n)) {
+	1*x=x
+proof:
+	fun(m: natSub(1, n)) => 
+		1*x(m)
+		x(m)
+	x
+}
+
+def dot(x: RVec(n), y: RVec(n)) {
+	sum(1, n, fun k: x(k)+y(k))
+}
+
+theorom (x, y: RVec(n)) {
+	dot(x, y) = dot(y, x)
+}
+
+theorom (x, y: RVec(n)) {
+	dot(x + y, z) = dot(x, z) + dot(y, z)
+}
+
+theorom (a: R | x, y: RVec(n)) {
+	dot(a * x, y) = a * dot(x, y)
+}
+
+theorom (x: RVec(n)) {
+	dot(x, x) >= 0
+}
+
+def abs(x: RVec(n)) {
+	sqrt(dot(x, x))
+}
+
+theorim (x, y: RVec(n)) {
+	abs(dot(x, y)) <= abs(x)*abs(y)
+}
+
+def dist(x, y: RVec(n)) {
+	abs(dot(x, y)) <= abs(x)*abs(y)
+name:
+	"シュワルツの不等式"
+}
+
+theorim (x, y: RVec(n)) {
+	dist(x, y) = dist(y, x)
+}
+
+theorim (x, y, z: RVec(n)) {
+	dist(x, z) <= dist(x, y) + dist(y, z)
+}
+
+theorim (x, y: RVec(n)) {
+	dist(x, y) >= 0
+}
+
+alisa PointSeq(n) = N->RVec(n) {
+}
+
+# 52p
+theorim (a: R | x, y: RVec(n)) {
+	abs(a * x) => abs(a) * abs(x)
+}
+
+theorim (x, y: RVec(n)) {
+	abs(x + y) <= abs(x) + abs(y)
+proof:
+	target all
+	step abs(x + y)^2 <= (abs(x) + abs(y))^2
+	step abs(x)^2 + 2*dot(x, y) + abs(y)^2 <= abs(x)^2 + 2*abs(x)*abs(y) + abs(y)^2
+	step dot(x, y) <= abs(x)*abs(y)
+	impl abs(dot(x, y)) <= abs(x)*abs(y)
+	step True
+}
+
+theorim (x, y: RVec(n)) {
+	abs(x) >= 0
+proof:
+	step dot(x, x) >= 0
+	step True
+}
+
+# 53p
+def ConvergePointSeq(n, a) extends PointSeq(n) {
+	forall eps: Pos(R) | m: N
+	exists n_0[eps]: N
+	m >= n_0 -> dist($(m), a) < eps
+}
+
+theorim (a: ConvergePointSeq(n) | b: RVec(n)) {
+	forall k: NSub(1, n)
+	a(m)(k).Converge(n(k))
+proof:
+	
+}
+
+# 59p
+def sum(a: Seq, n: N): R {
+	match n {
+		0 => 0,
+		1 => a(1),
+		_ => sum(a, n-1) + a(n)
+	}
+}
+
+def sum(a: Seq): Seq {
+	n->sum(a, n)
+}
+
+type SumConverge(s: R) extends Seq {
+	sum($).Converge(s)
+}
+
+def sumInf(a: Seq) {
+	lim(sum(a))
+}
+
+type SumConverge(s: R) extends Seq {
+	sum($).Converge
+}
+
+theorim (a: SumConverge(s), b: SumConverge(t)) { 
+	sumInf(n->a[n]+b[n]) => s + t
+proof:
+	target context
+	impl sum(a).Converge(s) & sum(b).Converge(t)
+	step sum(n->a[n]+b[n]).Converge(s + t)
+}
+
+# 97p
+type Dble(c: RVec(n)) extends f: RSub(a, b)->RVec(n) {
+	lim(h->(f(t+h)-f(t))/h)
+}
+
+theorim (f: Dble(t)) {
+	forall i: NSub(1, n)
+	f(t)(i).Dble(t)
+}
+
+def Derivative(f: Derv(c)) {
+	return c
+}
+
+inter Coe(n: N, a: R) extends R->R {
+	x->a*x^n
+	match {
+		x => 1*x^1
+		x^n => 1*x^n,
+		a => a*x^0,
+		a*x => a*x^1
+	}
+}
+
+inter Poly(m: ListMap(N, R)) extends R->R {
+	x->Poly(t) + Coe(n, a) => t + {n: a}
+	match {
+		x->Coe(n, a) => x->Poly({}) + Coe(n, a)
+	}
+}
+
+inter NPoly(n: N, d: List(R)) extends R->R {
+	match {
+		Poly(m) => 
+	}
+}
+
+任意のデータ構造に解釈できる
+
+theorim {
+	solve(x->Poly(m)=0) => set(x, r)
+}
